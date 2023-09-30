@@ -1,4 +1,3 @@
-import '@/styles/globals.css'
 import { CarCard, CustomFilter, Hero, SearchBar } from '@/components'
 //import { fetchCars } from '@/utils'
 import { Console } from 'console';
@@ -6,6 +5,7 @@ import Image from 'next/image'
 import "primereact/resources/themes/lara-light-indigo/theme.css";     
 import "primereact/resources/primereact.min.css";                                       
 import { fuels, yearsOfProduction } from '@/constants';
+import React from 'react';
 
 
 
