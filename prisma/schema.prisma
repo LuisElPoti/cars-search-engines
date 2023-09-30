@@ -1,0 +1,33 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+model auto {
+  id               Int       @id @default(autoincrement())
+  marca            String    @db.VarChar(80)
+  modelo           String    @db.VarChar(80)
+  estado           String    @db.VarChar(80)
+  year             Int       
+  precio           Int   
+  color_exterior   String    @db.VarChar(80)
+  color_interior   String    @db.VarChar(80)
+  combustible      String    @db.VarChar(80)
+  transmision      String    @db.VarChar(80)
+  traccion         String    @db.VarChar(80)
+  tipo             String    @db.VarChar(80)
+  puertas          Int
+  pasajeros        Int
+  descripcion      String?   @db.VarChar(350)
+  velocidad_maxima Int
+  caballos_por_minuto Int
+}
+
