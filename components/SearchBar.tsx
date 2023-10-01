@@ -95,19 +95,7 @@ const SearchBar = () => {
         />
         <SearchButton otherClasses="sm:hidden" />
       </div>
-      {suggestions.length > 0 && (
-        <ul className="suggestions-list">
-          {suggestions.map((suggestion, index) => (
-            <li
-              key={index}
-              onClick={() => handleSuggestionClick(suggestion)}
-              className="suggestion-item"
-            >
-              {suggestion}
-            </li>
-          ))}
-        </ul>
-      )}
+      
       <SearchButton otherClasses="max-sm:hidden" />
     </form>
   );
