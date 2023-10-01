@@ -6,7 +6,7 @@ import Image from 'next/image'
 import "primereact/resources/themes/lara-light-indigo/theme.css";     
 import "primereact/resources/primereact.min.css";                                       
 import { fuels, yearsOfProduction } from '@/constants';
-
+import React from 'react';
 
 
 export default function Home() {
@@ -14,9 +14,10 @@ export default function Home() {
   // const isDataEmpty = !Array.isArray(allCars) || allCars.length < 1 || !allCars;
 
   return (
+    
     <main className="overflow-hidden">
-      <Hero />
 
+      <Hero />
       <div className='mt-12 padding-x
       padding-y max-width' id='discover'>
         <div className='home__text-container'>

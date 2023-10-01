@@ -1,3 +1,4 @@
+import '@/styles/globals.css'
 import { CarCard, CustomFilter, Hero, SearchBar } from '@/components'
 //import { fetchCars } from '@/utils'
 import { Console } from 'console';
