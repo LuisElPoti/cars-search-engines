@@ -19,7 +19,7 @@ const Hero = () => {
             </h1>
 
             <p className="hero__subtitle">
-                Blababababababababb
+                Car Search te ayuda a encontrar el carro que deseas
             </p>
 
             <CustomButton

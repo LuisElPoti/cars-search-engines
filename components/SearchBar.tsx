@@ -1,11 +1,10 @@
-"use client";
-
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-//import  SearchManufacturer from "./SearchManufacturer";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import Image from "next/image";
+import fuzzysort from "fuzzysort";
+import Cookies from "js-cookie"; // Importa la biblioteca js-cookie
 
-const SearchButton = ({otherClasses}: {otherClasses: string}) => { 
+const SearchButton = ({ otherClasses }: { otherClasses: string }) => {
   return (
     <button type="submit" className={`-ml-3 z-10 ${otherClasses}`}>
       <Image
@@ -16,75 +15,102 @@ const SearchButton = ({otherClasses}: {otherClasses: string}) => {
         className="object-contain"
       />
     </button>
-  )
-}
-
+  );
+};
 
 const SearchBar = () => {
-  const [manufacturer, setManufacturer] = useState('');
-  const [model, setModel] = useState('')
+  const [terminoDeBusqueda, setTerminoDeBusqueda] = useState("");
+  const [suggestions, setSuggestions] = useState<string[]>([]);
   const router = useRouter();
 
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+  // Función para manejar cambios en el campo de búsqueda
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const searchTerm = e.target.value;
+    setTerminoDeBusqueda(searchTerm);
+
+    // Realiza una búsqueda difusa en la lista de sugerencias y actualiza el estado
+    const fuzzyResults = fuzzysort.go(searchTerm, suggestions);
+    const fuzzySuggestions = fuzzyResults.map((result) => result.target);
+    setSuggestions(fuzzySuggestions);
+
+    // Guarda la búsqueda actual en una cookie
+    Cookies.set("searchTerm", searchTerm);
+  };
+
+  // Función para manejar la selección de una sugerencia
+  const handleSuggestionClick = (suggestion: string) => {
+    setTerminoDeBusqueda(suggestion);
+  };
+
+  useEffect(() => {
+    // Recupera la búsqueda anterior del usuario desde la cookie
+    const previousSearchTerm = Cookies.get("searchTerm");
+    if (previousSearchTerm) {
+      setTerminoDeBusqueda(previousSearchTerm);
+    }
+
+    // Aquí puedes hacer una solicitud a tu API para obtener sugerencias iniciales
+    // Reemplaza esta simulación con tu lógica de búsqueda real
+    const initialSuggestions = ["Nissan", "Toyota", "Honda", "Chevrolet"];
+    setSuggestions(initialSuggestions);
+  }, []);
+
+  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if(manufacturer === '' && model === '') {
-      return alert('Por favor ingrese algo en la barra de busqueda')
+    if (terminoDeBusqueda === "") {
+      return alert("Por favor ingrese algo en la barra de búsqueda");
     }
 
-    updateSearchParams(model.toLowerCase(), manufacturer.toLowerCase())
-  }
+    try {
+      const response = await fetch(
+        `/api/BusquedaDifusa?terminoDeBusqueda=${terminoDeBusqueda}`
+      );
 
-  const updateSearchParams = (model: string, manufacturer: string) => {
-    const searchParams = new URLSearchParams(window.location.search);
-
-    if (model) {
-      searchParams.set('model', model)
-    } else {
-      searchParams.delete('model')
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+      } else {
+        console.error(
+          "Error al obtener los datos:",
+          response.status,
+          response.statusText
+        );
+      }
+    } catch (error) {
+      console.error("Error al obtener los datos:", error);
     }
-
-    if (manufacturer) {
-      searchParams.set('manufacturer', manufacturer)
-    } else {
-      searchParams.delete('manufacturer')
-    }
-
-    const newPathname = `${window.location.pathname}?${searchParams.toString()}`
-    
-    router.push(newPathname, {scroll: false})
-  }
+  };
 
   return (
-    <form className='searchbar' onSubmit={handleSearch}>
-      <div className="seachbar__item">
-        {/* <SearchManufacturer 
-         manufacturer={manufacturer}
-         setManufacturer={setManufacturer}
-        /> */}
-        <SearchButton otherClasses="sm:hidden"/>
-      </div>
+    <form className="searchbar" onSubmit={handleSearch}>
       <div className="searchbar__item">
-        <Image
-          src={"/model-icon.png"}
-          width={25}
-          height={25}
-          className="absolute w-[20px] h-[20px] ml-4"
-          alt="car model"
-        />
         <input
           type="text"
-          name="model"
-          value={model}
-          onChange={(e) => setModel(e.target.value)}
-          placeholder="Tiguan"
+          name="terminoDeBusqueda"
+          value={terminoDeBusqueda}
+          onChange={handleInputChange}
+          placeholder="Busque el carro de sus sueños..."
           className="searchbar__input"
         />
-        <SearchButton otherClasses="sm:hidden"/>
+        <SearchButton otherClasses="sm:hidden" />
       </div>
-      <SearchButton otherClasses="max-sm:hidden"/>
+      {suggestions.length > 0 && (
+        <ul className="suggestions-list">
+          {suggestions.map((suggestion, index) => (
+            <li
+              key={index}
+              onClick={() => handleSuggestionClick(suggestion)}
+              className="suggestion-item"
+            >
+              {suggestion}
+            </li>
+          ))}
+        </ul>
+      )}
+      <SearchButton otherClasses="max-sm:hidden" />
     </form>
-  )
-}
+  );
+};
 
-export default SearchBar
+export default SearchBar;
