@@ -2,27 +2,22 @@
 
 import { useState } from 'react'
 import Image from 'next/image';
-import { AutoProp } from '@/types';
+import { AutoProp, CarInfo } from '@/types';
 import CustomButton from './CustomButton';
-import CardDetails from './CardDetails';
 import { generateCarImageUrl } from '@/utils';
 
 interface CarCardProps {
-    car: AutoProp;
+    car: CarInfo;
 }
 
-
 const CarCard = ({ car }: CarCardProps) => {
-  const { velocidad_maxima, year, marca, modelo, transmision,
-  traccion } = car;
-  
-  // const [isOpen, setIsOpen] = useState(false);
+  const { item } = car;
 
   return (
     <div className='car-card group'>
         <div className='car-card__content'>
             <h2 className='car-card__content-title'>
-              {marca} {modelo}
+              {item.marca} {item.modelo}
             </h2>
         </div>
 
@@ -32,11 +27,13 @@ const CarCard = ({ car }: CarCardProps) => {
             font-semibold'>
               $
             </span>
-              Car Rent...   
+              {item.precio}  
         </p>
 
       <div className='relative w-full h-40 my-3
       object-contain'>
+        <Image src={generateCarImageUrl(car)} alt='car model' fill priority
+        className='object-contain'/>
       </div>
       
       <div className='relative flex w-full mt-2'>
@@ -47,7 +44,7 @@ const CarCard = ({ car }: CarCardProps) => {
             <Image src={"/steering-wheel.svg"} width={20}
             height={20} alt='steering wheel' />
             <p className='text-[14px]'>
-
+            {item.transmision}
             </p>
           </div>
           <div className='flex flex-col justify-center
@@ -55,7 +52,7 @@ const CarCard = ({ car }: CarCardProps) => {
             <Image src={"/tire.svg"} width={20}
             height={20} alt='tire' />
             <p className='text-[14px]'>
-
+            {item.traccion}
             </p>
           </div>
           <div className='flex flex-col justify-center
@@ -63,7 +60,7 @@ const CarCard = ({ car }: CarCardProps) => {
             <Image src={"/gas.svg"} width={20}
             height={20} alt='gas' />
             <p className='text-[14px]'>
-
+            {item.caballos_por_minuto} CPM
             </p>
           </div>
         </div>

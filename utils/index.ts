@@ -1,36 +1,37 @@
-import { AutoProp } from "@/types";
+import { AutoProp, CarInfo } from "@/types";
 
-export async function fetchCars(terminoDeBusqueda : string) {
+export async function fetchCars(terminoDeBusqueda : string) {  
     
-    const response = await fetch(`/api/BusquedaDifusa?terminoDeBusqueda=${terminoDeBusqueda}`
-    );
+    try {
+        const response = await fetch(`/api/BusquedaDifusa?terminoDeBusqueda=${terminoDeBusqueda}`);
 
-    if (response.ok) {
-        const data = await response.json(); 
-        console.table(data)
-        return data;
-    } else {
-        console.error(
-          "Error al obtener los datos:",
-          response.status,
-          response.statusText
-        );
+        if (response.ok) {
+            const data = await response.json(); 
+            return data;
+        } else {
+            console.error(
+            "Error al obtener los datos:",
+            response.status,
+            response.statusText
+            );
+        }
+    } catch(error) {
+        console.error("Error al obtener los datos:", error);
     }
-    
-}
+}   
 
 // //utilizar
-export const generateCarImageUrl = (car: AutoProp, angulo?: string) => {
+export const generateCarImageUrl = (car: CarInfo, angulo?: string) => {
     //key
     const url = new URL('https://cdn.imagin.studio/getimage');
 
-    const { marca, year, modelo } = car;
+    const {item} = car;
 
     url.searchParams.append('customer','hrjavascript-mastery');
-    url.searchParams.append('make', marca);
-    url.searchParams.append('modelFamily', modelo.split(' ')[0]);
+    url.searchParams.append('make', item.marca);
+    url.searchParams.append('modelFamily', item.modelo);
     url.searchParams.append('zoomType', 'fullscreen');
-    url.searchParams.append('modelYear', `${year}`);
+    url.searchParams.append('modelYear', `${item.year}`);
     url.searchParams.append('angle', `${angulo}`);
 
     return `${url}`;

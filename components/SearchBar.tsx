@@ -3,6 +3,9 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import fuzzysort from "fuzzysort";
 import Cookies from "js-cookie";
+import { fetchCars } from "@/utils";
+import { CarCard } from ".";
+import { CarInfo } from "@/types";
 
 const SearchButton = ({ otherClasses }: { otherClasses: string }) => {
   return (
@@ -22,6 +25,9 @@ const SearchBar = () => {
   const [terminoDeBusqueda, setTerminoDeBusqueda] = useState("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const router = useRouter();
+  const [allCars, setAllCars] = useState<any>();
+  const [isDataEmpty, setIsDataEmpty] = useState(Boolean);
+  
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value;
@@ -42,24 +48,9 @@ const SearchBar = () => {
       return alert("Por favor ingrese algo en la barra de búsqueda");
     }
 
-    try {
-      const response = await fetch(
-        `/api/BusquedaDifusa?terminoDeBusqueda=${terminoDeBusqueda}`
-      );
+    setAllCars(await fetchCars(terminoDeBusqueda));
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-      } else {
-        console.error(
-          "Error al obtener los datos:",
-          response.status,
-          response.statusText
-        );
-      }
-    } catch (error) {
-      console.error("Error al obtener los datos:", error);
-    }
+    setIsDataEmpty(!Array.isArray(allCars) || allCars.length < 1 || !allCars);
 
     // Guarda el término de búsqueda actual en las cookies
     //Cookies.set("searchTerm", terminoDeBusqueda);
@@ -97,7 +88,6 @@ const SearchBar = () => {
     } catch (error) {
       console.error("Error al analizar el historial de búsqueda:", error);
     }
-
     if (!Array.isArray(parsedSearchHistory)) {
       parsedSearchHistory = [];
     }
@@ -111,36 +101,57 @@ const SearchBar = () => {
   }, [terminoDeBusqueda]);
 
   return (
-    <form className="searchbar" onSubmit={handleSearch}>
-      <div className="searchbar__item">
-        <input
-          type="text"
-          name="terminoDeBusqueda"
-          value={terminoDeBusqueda}
-          onChange={handleInputChange}
-          placeholder="Busque el carro de sus sueños..."
-          className="searchbar__input"
-        />
-        <SearchButton otherClasses="sm:hidden" />
-      </div>
-      {suggestions.length > 0 && (
-        <ul
-          className="suggestions-list"
-          style={{ position: "absolute", top: "100%", left: 0, right: 0 }}
-        >
-          {suggestions.map((suggestion, index) => (
-            <li
-              key={index}
-              onClick={() => setTerminoDeBusqueda(suggestion)}
-              className="suggestion-item"
-            >
-              {suggestion}
-            </li>
-          ))}
-        </ul>
-      )}
-      <SearchButton otherClasses="max-sm:hidden" />
-    </form>
+    <div>
+      <form className="searchbar" onSubmit={handleSearch}>
+        <div className="searchbar__item">
+          <input
+            type="text"
+            name="terminoDeBusqueda"
+            value={terminoDeBusqueda}
+            onChange={handleInputChange}
+            placeholder="Busque el carro de sus sueños..."
+            className="searchbar__input"
+          />
+          <SearchButton otherClasses="sm:hidden" />
+        </div>
+        {suggestions.length > 0 && (
+          <ul
+            className="suggestions-list"
+            style={{ position: "absolute", top: "100%", left: 0, right: 0 }}
+          >
+            {suggestions.map((suggestion, index) => (
+              <li
+                key={index}
+                onClick={() => setTerminoDeBusqueda(suggestion)}
+                className="suggestion-item"
+              >
+                {suggestion}
+              </li>
+            ))}
+          </ul>
+        )}
+        <SearchButton otherClasses="max-sm:hidden" />
+      </form>
+
+      {!isDataEmpty ? (
+          <section>
+            <div className='home__cars-wrapper'>
+              {allCars?.map((car: CarInfo, i: any) => (
+                <CarCard car ={car} key={i}  />
+              ))}
+            </div>
+          </section>
+        ): (
+          <div className='home__error-container'>
+            <h2 className='text-black text-xl
+            font-bold mt-3 '> Sin resultados</h2>
+            <p>{allCars?.message}</p>
+          </div> 
+        )}
+        
+    </div>
+    
+           
   );
 };
 

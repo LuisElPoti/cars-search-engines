@@ -29,6 +29,11 @@ export interface AutoProp { //info adicional desplegada en el modal
     descripcion: string;
 }
 
+export interface CarInfo{
+    item: AutoProp;
+    refIndex: number;
+}
+
 export interface FilterProp { //buscador y filtros
     marca: string;
     year: number;
