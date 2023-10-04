@@ -6,7 +6,6 @@ import { AutoProp } from '@/types';
 import CustomButton from './CustomButton';
 import CardDetails from './CardDetails';
 import { generateCarImageUrl } from '@/utils';
-import { dataPrueba } from '@/constants/datafake';
 
 interface CarCardProps {
     car: AutoProp;
