@@ -32,13 +32,13 @@ export default function Home() {
         </div>
 
         <div className='home__filters'>
-          <SearchBar />
+          {/* <SearchBar /> */}
 
-          <div
+          {/* <div
           className='home__filter-container'>
             <CustomFilter titulo="combustible" opciones={fuels}/>
             <CustomFilter titulo="year" opciones={yearsOfProduction}/>
-          </div>
+          </div> */}
         </div>
 
         {/* {!isDataEmpty ? (
