@@ -7,4 +7,7 @@ module.exports = {
   api: {
     externalResolver: true,
   },
+  images: {
+    domains: ['cdn.imagin.studio']
+  }
 };

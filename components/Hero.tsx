@@ -25,13 +25,13 @@ const Hero = () => {
                 Car Search te ayuda a encontrar el carro que deseas
             </p>
 
-            <SearchBar />
+            
 
         </div>
         <div className="hero__image-container">
             <div className="hero__image">
                 <Image src="/hero.png" alt='hero' priority={true}
-                fill className='object-contain' sizes=''/>
+                fill className='object-contain' sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"/>
             </div>
             
             <div className='hero__image-overlay'/>    
