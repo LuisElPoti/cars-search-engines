@@ -5,7 +5,8 @@ import Image from 'next/image';
 import { AutoProp } from '@/types';
 import CustomButton from './CustomButton';
 import CardDetails from './CardDetails';
-//import { generateCarImageUrl } from '@/utils';
+import { generateCarImageUrl } from '@/utils';
+import { dataPrueba } from '@/constants/datafake';
 
 interface CarCardProps {
     car: AutoProp;
@@ -13,8 +14,8 @@ interface CarCardProps {
 
 
 const CarCard = ({ car }: CarCardProps) => {
-  // const { velocidad_maxima, year, marca, modelo, transmision,
-  // traccion } = car;
+  const { velocidad_maxima, year, marca, modelo, transmision,
+  traccion } = car;
   
   // const [isOpen, setIsOpen] = useState(false);
 
@@ -22,7 +23,7 @@ const CarCard = ({ car }: CarCardProps) => {
     <div className='car-card group'>
         <div className='car-card__content'>
             <h2 className='car-card__content-title'>
-
+              {marca} {modelo}
             </h2>
         </div>
 
