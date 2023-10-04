@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import fuzzysort from "fuzzysort";
-import Cookies from "js-cookie"; // Importa la biblioteca js-cookie
+import Cookies from "js-cookie";
 
 const SearchButton = ({ otherClasses }: { otherClasses: string }) => {
   return (
@@ -23,37 +23,17 @@ const SearchBar = () => {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const router = useRouter();
 
-  // Función para manejar cambios en el campo de búsqueda
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value;
     setTerminoDeBusqueda(searchTerm);
-
-    // Realiza una búsqueda difusa en la lista de sugerencias y actualiza el estado
-    const fuzzyResults = fuzzysort.go(searchTerm, suggestions);
-    const fuzzySuggestions = fuzzyResults.map((result) => result.target);
-    setSuggestions(fuzzySuggestions);
-
-    // Guarda la búsqueda actual en una cookie
-    Cookies.set("searchTerm", searchTerm);
   };
 
-  // Función para manejar la selección de una sugerencia
-  const handleSuggestionClick = (suggestion: string) => {
-    setTerminoDeBusqueda(suggestion);
-  };
-
-  useEffect(() => {
-    // Recupera la búsqueda anterior del usuario desde la cookie
-    const previousSearchTerm = Cookies.get("searchTerm");
-    if (previousSearchTerm) {
-      setTerminoDeBusqueda(previousSearchTerm);
-    }
-
-    // Aquí puedes hacer una solicitud a tu API para obtener sugerencias iniciales
-    // Reemplaza esta simulación con tu lógica de búsqueda real
-    const initialSuggestions = ["Nissan", "Toyota", "Honda", "Chevrolet"];
-    setSuggestions(initialSuggestions);
-  }, []);
+  // useEffect(() => {
+  //   const previousSearchTerm = Cookies.get("searchTerm");
+  //   if (previousSearchTerm) {
+  //     setTerminoDeBusqueda(previousSearchTerm);
+  //   }
+  // }, []);
 
   const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -80,7 +60,55 @@ const SearchBar = () => {
     } catch (error) {
       console.error("Error al obtener los datos:", error);
     }
+
+    // Guarda el término de búsqueda actual en las cookies
+    //Cookies.set("searchTerm", terminoDeBusqueda);
+
+    // Actualiza las sugerencias con el historial de búsquedas desde las cookies
+    const searchHistory = Cookies.get("searchHistory") || "[]";
+    let parsedSearchHistory = [];
+
+    try {
+      parsedSearchHistory = JSON.parse(searchHistory);
+    } catch (error) {
+      console.error("Error al analizar el historial de búsqueda:", error);
+    }
+
+    if (!Array.isArray(parsedSearchHistory)) {
+      parsedSearchHistory = [];
+    }
+
+    if (!parsedSearchHistory.includes(terminoDeBusqueda)) {
+      parsedSearchHistory.push(terminoDeBusqueda);
+      Cookies.set("searchHistory", JSON.stringify(parsedSearchHistory), {
+        expires: 365,
+      });
+    }
+
+    setSuggestions(parsedSearchHistory);
   };
+
+  useEffect(() => {
+    const searchHistory = Cookies.get("searchHistory") || "[]";
+    let parsedSearchHistory = [];
+
+    try {
+      parsedSearchHistory = JSON.parse(searchHistory);
+    } catch (error) {
+      console.error("Error al analizar el historial de búsqueda:", error);
+    }
+
+    if (!Array.isArray(parsedSearchHistory)) {
+      parsedSearchHistory = [];
+    }
+
+    // Filtra el historial de búsqueda basado en el término de búsqueda actual
+    const filteredSuggestions = parsedSearchHistory.filter((suggestion) =>
+      suggestion.toLowerCase().includes(terminoDeBusqueda.toLowerCase())
+    );
+
+    setSuggestions(filteredSuggestions);
+  }, [terminoDeBusqueda]);
 
   return (
     <form className="searchbar" onSubmit={handleSearch}>
@@ -95,7 +123,22 @@ const SearchBar = () => {
         />
         <SearchButton otherClasses="sm:hidden" />
       </div>
-      
+      {suggestions.length > 0 && (
+        <ul
+          className="suggestions-list"
+          style={{ position: "absolute", top: "100%", left: 0, right: 0 }}
+        >
+          {suggestions.map((suggestion, index) => (
+            <li
+              key={index}
+              onClick={() => setTerminoDeBusqueda(suggestion)}
+              className="suggestion-item"
+            >
+              {suggestion}
+            </li>
+          ))}
+        </ul>
+      )}
       <SearchButton otherClasses="max-sm:hidden" />
     </form>
   );

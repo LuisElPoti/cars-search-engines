@@ -15,7 +15,7 @@ export default function Home() {
 
   return (
     
-    <main className="overflow-hidden">
+    <main>
 
       <Hero />
       <div className='mt-12 padding-x
@@ -29,11 +29,7 @@ export default function Home() {
         <div className='home__filters'>
           <SearchBar />
           
-          <div
-          className='home__filter-container'>
-            <CustomFilter titulo="combustible" opciones={fuels}/>
-            <CustomFilter titulo="year" opciones={yearsOfProduction}/>
-          </div>
+          
         </div>
 
         {/* {!isDataEmpty ? (
@@ -57,4 +53,3 @@ export default function Home() {
     </main>
   )
 }
-
