@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { fetchCars } from "@/utils";
 import { CarCard } from ".";
 import { CarInfo } from "@/types";
+import Pagination from "./Paginacion"; // Importa el componente de paginación
 
 const SearchButton = ({ otherClasses }: { otherClasses: string }) => {
   return (
@@ -24,9 +25,11 @@ const SearchBar = () => {
   const [terminoDeBusqueda, setTerminoDeBusqueda] = useState("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const router = useRouter();
-  const [allCars, setAllCars] = useState<any>();
+  const [allCars, setAllCars] = useState<CarInfo[]>([]); // Cambié el tipo a CarInfo[]
   const [isDataEmpty, setIsDataEmpty] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false); // Added loading state
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState<number>(1); // Página actual
+  const carsPerPage = 12; 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,7 +44,7 @@ const SearchBar = () => {
       return alert("Por favor ingrese algo en la barra de búsqueda");
     }
 
-    setIsLoading(true); // Set loading state to true
+    setIsLoading(true);
 
     // Fetch data
     const cars = await fetchCars(terminoDeBusqueda);
@@ -49,7 +52,7 @@ const SearchBar = () => {
 
     setIsDataEmpty(!Array.isArray(cars) || cars.length < 1 || !cars);
 
-    setIsLoading(false); // Set loading state back to false
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -65,7 +68,6 @@ const SearchBar = () => {
       parsedSearchHistory = [];
     }
 
-    // Filtra el historial de búsqueda basado en el término de búsqueda actual
     const filteredSuggestions = parsedSearchHistory.filter((suggestion) =>
       suggestion.toLowerCase().includes(terminoDeBusqueda.toLowerCase())
     );
@@ -86,6 +88,11 @@ const SearchBar = () => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+  // Función para obtener los carros en la página actual
+  const indexOfLastCar = currentPage * carsPerPage;
+  const indexOfFirstCar = indexOfLastCar - carsPerPage;
+  const currentCars = allCars.slice(indexOfFirstCar, indexOfLastCar);
 
   return (
     <div>
@@ -128,7 +135,7 @@ const SearchBar = () => {
           {!isDataEmpty ? (
             <section>
               <div className="home__cars-wrapper">
-                {allCars?.map((car: CarInfo, i: any) => (
+                {currentCars.map((car: CarInfo, i: any) => (
                   <CarCard car={car} key={i} />
                 ))}
               </div>
@@ -136,9 +143,19 @@ const SearchBar = () => {
           ) : (
             <div className="home__error-container">
               <h2 className="text-black text-xl font-bold mt-3">Sin resultados</h2>
-              <p>{allCars?.message}</p>
+              {Array.isArray(allCars) && allCars.length === 0 && <p>Sin resultados</p>}
             </div>
           )}
+        </div>
+      )}
+
+      {!isDataEmpty && (
+        <div className="pagination-container">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={Math.ceil(allCars.length / carsPerPage)}
+            onPageChange={(page: number) => setCurrentPage(page)}
+          />
         </div>
       )}
     </div>
