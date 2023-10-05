@@ -119,24 +119,28 @@ const SearchBar = () => {
         ) : null}
       </form>
 
-      <div className="search-results-container">
-        {isLoading ? (
+      {isLoading ? (
+        <div className="loading-indicator-container">
           <div className="loading-indicator">Loading...</div>
-        ) : !isDataEmpty ? (
-          <section>
-            <div className="home__cars-wrapper">
-              {allCars?.map((car: CarInfo, i: any) => (
-                <CarCard car={car} key={i} />
-              ))}
+        </div>
+      ) : (
+        <div className="search-results-container">
+          {!isDataEmpty ? (
+            <section>
+              <div className="home__cars-wrapper">
+                {allCars?.map((car: CarInfo, i: any) => (
+                  <CarCard car={car} key={i} />
+                ))}
+              </div>
+            </section>
+          ) : (
+            <div className="home__error-container">
+              <h2 className="text-black text-xl font-bold mt-3">Sin resultados</h2>
+              <p>{allCars?.message}</p>
             </div>
-          </section>
-        ) : (
-          <div className="home__error-container">
-            <h2 className="text-black text-xl font-bold mt-3">Sin resultados</h2>
-            <p>{allCars?.message}</p>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

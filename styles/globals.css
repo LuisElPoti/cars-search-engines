@@ -257,3 +257,10 @@
   justify-content: center;
   min-height: 200px; /* Adjust the height as needed */
 }
+
+.loading-indicator-container {
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+  min-height: 200px; /* Ajusta la altura según sea necesario */
+}
