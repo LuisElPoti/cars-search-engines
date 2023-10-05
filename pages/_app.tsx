@@ -22,7 +22,7 @@ export default function Home() {
       padding-y max-width' id='discover'>
         <div className='home__text-container'>
           <h1 className='text-4xl
-          font-extrabold'>Catalogo de carros</h1>
+          font-extrabold'>Catálogo de carros</h1>
           <p>Explora los carros que desees</p>
 
         </div>

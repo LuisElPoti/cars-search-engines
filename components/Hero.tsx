@@ -18,7 +18,7 @@ const Hero = () => {
     <div className ="hero">
         <div className="flex-1 pt-36 padding-x">
             <h1 className="hero__title">
-                Encuentra tu carro, rapido y facil
+                Encuentra tu carro, rápido y fácil
             </h1>
 
             <p className="hero__subtitle mb-8 ">
