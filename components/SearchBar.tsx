@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import fuzzysort from "fuzzysort";
 import Cookies from "js-cookie";
 import { fetchCars } from "@/utils";
 import { CarCard } from ".";
@@ -26,20 +25,14 @@ const SearchBar = () => {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const router = useRouter();
   const [allCars, setAllCars] = useState<any>();
-  const [isDataEmpty, setIsDataEmpty] = useState(Boolean);
-  
+  const [isDataEmpty, setIsDataEmpty] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false); // Added loading state
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value;
     setTerminoDeBusqueda(searchTerm);
   };
-
-  // useEffect(() => {
-  //   const previousSearchTerm = Cookies.get("searchTerm");
-  //   if (previousSearchTerm) {
-  //     setTerminoDeBusqueda(previousSearchTerm);
-  //   }
-  // }, []);
 
   const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -48,35 +41,15 @@ const SearchBar = () => {
       return alert("Por favor ingrese algo en la barra de búsqueda");
     }
 
-    setAllCars(await fetchCars(terminoDeBusqueda));
+    setIsLoading(true); // Set loading state to true
 
-    setIsDataEmpty(!Array.isArray(allCars) || allCars.length < 1 || !allCars);
+    // Fetch data
+    const cars = await fetchCars(terminoDeBusqueda);
+    setAllCars(cars);
 
-    // Guarda el término de búsqueda actual en las cookies
-    //Cookies.set("searchTerm", terminoDeBusqueda);
+    setIsDataEmpty(!Array.isArray(cars) || cars.length < 1 || !cars);
 
-    // Actualiza las sugerencias con el historial de búsquedas desde las cookies
-    const searchHistory = Cookies.get("searchHistory") || "[]";
-    let parsedSearchHistory = [];
-
-    try {
-      parsedSearchHistory = JSON.parse(searchHistory);
-    } catch (error) {
-      console.error("Error al analizar el historial de búsqueda:", error);
-    }
-
-    if (!Array.isArray(parsedSearchHistory)) {
-      parsedSearchHistory = [];
-    }
-
-    if (!parsedSearchHistory.includes(terminoDeBusqueda)) {
-      parsedSearchHistory.push(terminoDeBusqueda);
-      Cookies.set("searchHistory", JSON.stringify(parsedSearchHistory), {
-        expires: 365,
-      });
-    }
-
-    setSuggestions(parsedSearchHistory);
+    setIsLoading(false); // Set loading state back to false
   };
 
   useEffect(() => {
@@ -100,10 +73,24 @@ const SearchBar = () => {
     setSuggestions(filteredSuggestions);
   }, [terminoDeBusqueda]);
 
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (searchInputRef.current && !searchInputRef.current.contains(e.target as Node)) {
+        setSuggestions([]);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div>
       <form className="searchbar" onSubmit={handleSearch}>
-        <div className="searchbar__item">
+        <div className="searchbar__item" ref={searchInputRef}>
           <input
             type="text"
             name="terminoDeBusqueda"
@@ -114,7 +101,7 @@ const SearchBar = () => {
           />
           <SearchButton otherClasses="sm:hidden" />
         </div>
-        {suggestions.length > 0 && (
+        {suggestions.length > 0 ? (
           <ul
             className="suggestions-list"
             style={{ position: "absolute", top: "100%", left: 0, right: 0 }}
@@ -129,29 +116,28 @@ const SearchBar = () => {
               </li>
             ))}
           </ul>
-        )}
-        <SearchButton otherClasses="max-sm:hidden" />
+        ) : null}
       </form>
 
-      {!isDataEmpty ? (
+      <div className="search-results-container">
+        {isLoading ? (
+          <div className="loading-indicator">Loading...</div>
+        ) : !isDataEmpty ? (
           <section>
-            <div className='home__cars-wrapper'>
+            <div className="home__cars-wrapper">
               {allCars?.map((car: CarInfo, i: any) => (
-                <CarCard car ={car} key={i}  />
+                <CarCard car={car} key={i} />
               ))}
             </div>
           </section>
-        ): (
-          <div className='home__error-container'>
-            <h2 className='text-black text-xl
-            font-bold mt-3 '> Sin resultados</h2>
+        ) : (
+          <div className="home__error-container">
+            <h2 className="text-black text-xl font-bold mt-3">Sin resultados</h2>
             <p>{allCars?.message}</p>
-          </div> 
+          </div>
         )}
-        
+      </div>
     </div>
-    
-           
   );
 };
 
