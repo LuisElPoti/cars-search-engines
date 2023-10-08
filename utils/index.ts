@@ -20,6 +20,26 @@ export async function fetchCars(terminoDeBusqueda : string) {
     }
 }   
 
+export async function fetchCarDetail(id : number) {  
+
+    try {
+        const response = await fetch(`/api/MostrarInfoAuto?auto=${id}`);
+
+        if (response.ok) {
+            const data = await response.json(); 
+            return data;
+        } else {
+            console.error(
+            "Error al obtener los datos:",
+            response.status,
+            response.statusText
+            );
+        }
+    } catch(error) {
+        console.error("Error al obtener los datos:", error);
+    }
+}   
+
 // //utilizar
 export const generateCarImageUrl = (car: CarInfo, angulo?: string) => {
     //key
@@ -36,6 +56,21 @@ export const generateCarImageUrl = (car: CarInfo, angulo?: string) => {
 
     return `${url}`;
 }
+
+export const generateCarImageUrl2 = (car: AutoProp, angulo?: string) => {
+    //key
+    const url = new URL('https://cdn.imagin.studio/getimage');
+
+    url.searchParams.append('customer','hrjavascript-mastery');
+    url.searchParams.append('make', car.marca);
+    url.searchParams.append('modelFamily', car.modelo);
+    url.searchParams.append('zoomType', 'fullscreen');
+    url.searchParams.append('modelYear', `${car.year}`);
+    url.searchParams.append('angle', `${angulo}`);
+
+    return `${url}`;
+}
+
 
 export const updateSearchParams = (type: string, value: string) => {
 

@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/router";
 import Image from "next/image";
 import Cookies from "js-cookie";
 import { fetchCars } from "@/utils";
@@ -7,7 +6,7 @@ import { CarCard } from ".";
 import { CarInfo } from "@/types";
 import Pagination from "./Paginacion"; // Importa el componente de paginación
 
-const SearchButton = ({ otherClasses }: { otherClasses: string }) => {
+const SearchButton = ({ otherClasses }: { otherClasses: string }) => { //Botón de búsqueda
   return (
     <button type="submit" className={`-ml-3 z-10 ${otherClasses}`}>
       <Image
@@ -24,23 +23,22 @@ const SearchButton = ({ otherClasses }: { otherClasses: string }) => {
 const SearchBar = () => {
   const [terminoDeBusqueda, setTerminoDeBusqueda] = useState("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  const router = useRouter();
-  const [allCars, setAllCars] = useState<CarInfo[]>([]); // Cambié el tipo a CarInfo[]
+  const [allCars, setAllCars] = useState<CarInfo[]>([]);  // Carros traídos por la api
   const [isDataEmpty, setIsDataEmpty] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1); // Página actual
   const carsPerPage = 12; 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => { // Actualiza el término de búsqueda
     const searchTerm = e.target.value;
     setTerminoDeBusqueda(searchTerm);
   };
 
-  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {  // Función que realiza la búsqueda
     e.preventDefault();
 
-    if (terminoDeBusqueda === "") {
+    if (terminoDeBusqueda === "") {  // Si no se escribe nada en la barra debúsqyeda
       return alert("Por favor ingrese algo en la barra de búsqueda");
     }
 
@@ -106,7 +104,7 @@ const SearchBar = () => {
             placeholder="Busque el carro de sus sueños..."
             className="searchbar__input"
           />
-          <SearchButton otherClasses="sm:hidden" />
+          <SearchButton otherClasses="" />
         </div>
         {suggestions.length > 0 ? (
           <ul

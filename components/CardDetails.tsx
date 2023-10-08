@@ -1,22 +1,28 @@
 "use client"
 
-import { AutoProp } from '@/types';
+import { AutoProp, CarInfo } from '@/types';
 import Image from 'next/image';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
+import { fetchCarDetail } from '@/utils';
 //import { generateCarImageUrl } from '@/utils';
 
 //no usaremos esto
-interface CardDetailsProps {
-    isOpen: boolean;
-    closeModal: () => void;
-    car: AutoProp;
-}
 
-const CardDetails = ({ isOpen, closeModal,
-car }: CardDetailsProps) => {
+const CardDetails = ({ id }: {id : number}) => {
+    const [carDetail, setCarDetail] = useState<CarInfo>()
+
+    const handleCarDetail = async () => {
+        console.log(id);
+        
+        const car = await fetchCarDetail(id);
+        setCarDetail(car);
+        console.log(car);
+    }
+
   return (
-    <>
+    <div>
+
         {/* <Transition appear show={isOpen} as={Fragment}>
             <Dialog as='div' className="relative z-10"
             onClose={closeModal}>
@@ -118,7 +124,7 @@ car }: CardDetailsProps) => {
 
             </Dialog>
         </Transition> */}
-    </>
+    </div>
   )
 }
 
