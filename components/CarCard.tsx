@@ -5,6 +5,8 @@ import Image from 'next/image';
 import { AutoProp, CarInfo } from '@/types';
 import CustomButton from './CustomButton';
 import { generateCarImageUrl } from '@/utils';
+import {useRouter, usePathname} from 'next/navigation'
+import Link from 'next/link';
 
 interface CarCardProps {
     car: CarInfo;
@@ -12,6 +14,7 @@ interface CarCardProps {
 
 const CarCard = ({ car }: CarCardProps) => {
   const { item } = car;
+  const router = useRouter();
 
   return (
     <div className='car-card group'>
@@ -68,14 +71,17 @@ const CarCard = ({ car }: CarCardProps) => {
 
         <div className='car-card__btn-container'>
           <CustomButton
+    
            titulo='Ver mas'
            estilo_contenedor='w-full py-[16px]
            rounded-full bg-primary-blue'
            estilo_texto="text-white text-[14px] leading-[17px]
            font-bold"
            icono_derecha="/right-arrow.svg"
+           handleClick={() => router.push(`/detail?id=${item.id}`)}
           />
         </div>
+        
       </div>
     </div>
   )
