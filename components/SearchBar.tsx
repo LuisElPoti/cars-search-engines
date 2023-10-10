@@ -5,6 +5,7 @@ import { fetchCars } from "@/utils";
 import { CarCard } from ".";
 import { CarInfo } from "@/types";
 import Pagination from "./Paginacion"; // Importa el componente de paginación
+import { useRouter } from "next/router";
 
 const SearchButton = ({ otherClasses }: { otherClasses: string }) => { //Botón de búsqueda
   return (
@@ -35,6 +36,8 @@ const SearchBar = () => {
     setTerminoDeBusqueda(searchTerm);
   };
 
+  const router = useRouter();
+
   const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {  // Función que realiza la búsqueda
     e.preventDefault();
 
@@ -51,6 +54,8 @@ const SearchBar = () => {
     setIsDataEmpty(!Array.isArray(cars) || cars.length < 1 || !cars);
 
     setIsLoading(false);
+    setCurrentPage(1);
+    router.push('', '/'+terminoDeBusqueda.toString(), { shallow: true, scroll: false}); // Cambio url
   };
 
   useEffect(() => {
