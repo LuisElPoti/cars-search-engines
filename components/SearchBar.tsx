@@ -7,6 +7,11 @@ import { CarInfo } from "@/types";
 import Pagination from "./Paginacion"; // Importa el componente de paginación
 import { useRouter } from "next/router";
 
+let ventana;
+if (typeof window !== 'undefined')
+{
+  ventana = window.localStorage.getItem('key');
+}
 const SearchButton = ({ otherClasses }: { otherClasses: string }) => { //Botón de búsqueda
   return (
     <button type="submit" className={`-ml-3 z-10 ${otherClasses}`}>
@@ -28,6 +33,7 @@ const SearchBar = () => {
   const [isDataEmpty, setIsDataEmpty] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1); // Página actual
+  const [start ,setStart] = useState<boolean>(true);
   const carsPerPage = 12; 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -37,6 +43,25 @@ const SearchBar = () => {
   };
 
   const router = useRouter();
+
+  const handleLoad = async() => {
+
+
+    if(router.query.vehiculo && start === true)
+    {
+      setIsLoading(true);
+
+      // Fetch data
+      const cars = await fetchCars(String(router.query.vehiculo));
+      setAllCars(cars);
+  
+      setIsDataEmpty(!Array.isArray(cars) || cars.length < 1 || !cars);
+  
+      setIsLoading(false);
+      setCurrentPage(1);
+      setStart(false);
+    }
+  }
 
   const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {  // Función que realiza la búsqueda
     e.preventDefault();
@@ -57,6 +82,10 @@ const SearchBar = () => {
     setCurrentPage(1);
     router.push('', '/'+terminoDeBusqueda.toString(), { shallow: true, scroll: false}); // Cambio url
   };
+
+  useEffect(() => {
+    handleLoad();
+  }), [isLoading, currentPage];
 
   useEffect(() => {
     const searchHistory = Cookies.get("searchHistory") || "[]";
