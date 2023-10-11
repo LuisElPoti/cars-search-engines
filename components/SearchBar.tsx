@@ -81,6 +81,25 @@ const SearchBar = () => {
     setIsLoading(false);
     setCurrentPage(1);
     router.push('', '/'+terminoDeBusqueda.toString(), { shallow: true, scroll: false}); // Cambio url
+
+    const searchHistory = Cookies.get("searchHistory") || "[]";
+    let parsedSearchHistory = [];
+
+    try {
+      parsedSearchHistory = JSON.parse(searchHistory);
+    } catch (error) {
+      console.error("Error al analizar el historial de búsqueda:", error);
+    }
+
+    if (!Array.isArray(parsedSearchHistory)) {
+      parsedSearchHistory = [];
+    }
+
+    // Agrega el término de búsqueda actual al historial de búsqueda
+    parsedSearchHistory.push(terminoDeBusqueda);
+
+    // Guarda el historial de búsqueda en la cookie
+    Cookies.set("searchHistory", JSON.stringify(parsedSearchHistory));
   };
 
   useEffect(() => {
@@ -99,6 +118,8 @@ const SearchBar = () => {
     if (!Array.isArray(parsedSearchHistory)) {
       parsedSearchHistory = [];
     }
+
+    
 
     const filteredSuggestions = parsedSearchHistory.filter((suggestion) =>
       suggestion.toLowerCase().includes(terminoDeBusqueda.toLowerCase())
