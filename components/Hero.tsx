@@ -1,17 +1,10 @@
 "use client"
 
 import Image from 'next/image';
-import CustomButton from './CustomButton';
-import { SearchBar } from '.';
-import { preload } from 'react-dom';
-//import { config } from '@fortawesome/fontawesome-svg-core'
-//import '@fortawesome/fontawesome-svg-core/styles.css'
-//config.autoAddCss = false
+
 
 const Hero = () => {
-  const handleScroll = () => {
 
-  }
 
   return (
     
