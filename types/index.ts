@@ -33,20 +33,3 @@ export interface CarInfo{
     item: AutoProp;
     refIndex: number;
 }
-
-export interface FilterProp { //buscador y filtros
-    marca: string;
-    year: number;
-    combustible: string;
-    modelo: string;
-}
-
-export interface OpcionProp {  //opciones de los filtros
-    titulo: string;
-    valor: string;
-}
-
-export interface CustomFilterProp {  //opciones de los filtros
-    titulo: string;
-    opciones: OpcionProp[];
-}

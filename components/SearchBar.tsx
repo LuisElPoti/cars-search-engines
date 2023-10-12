@@ -6,6 +6,7 @@ import { CarCard } from ".";
 import { CarInfo } from "@/types";
 import Pagination from "./Paginacion"; // Importa el componente de paginación
 import { useRouter } from "next/router";
+import Swal from 'sweetalert2'
 
 let ventana;
 if (typeof window !== 'undefined')
@@ -67,7 +68,14 @@ const SearchBar = () => {
     e.preventDefault();
 
     if (terminoDeBusqueda === "") {  // Si no se escribe nada en la barra debúsqyeda
-      return alert("Por favor ingrese algo en la barra de búsqueda");
+      return Swal.fire({
+        position: 'top-right',
+        toast: true,
+        icon: 'info',
+        text: 'Por favor ingrese algo en la barra de búsqueda',
+        showConfirmButton: false,
+        timer: 1500
+      })
     }
 
     setIsLoading(true);
@@ -128,7 +136,8 @@ const SearchBar = () => {
 
   return (
     <div>
-      <form className="searchbar" onSubmit={handleSearch}>
+
+      <form className="searchbar mt-3 ml-2" onSubmit={handleSearch}>
         <div className="searchbar__item" ref={searchInputRef}>
           <input
             type="text"
@@ -159,8 +168,17 @@ const SearchBar = () => {
       </form>
 
       {isLoading ? (
+        
         <div className="loading-indicator-container">
-          <div className="loading-indicator">Loading...</div>
+          <div aria-label="Loading..." role="status">
+            <svg className="animate-spin w-6 h-6 fill-blue-500" viewBox="3 3 18 18">
+              <path className="opacity-20" d="M12 5C8.13401 5 5 8.13401 5 12C5 15.866 8.13401 19 12 19C15.866 19 19 15.866 19 12C19 8.13401 15.866 5 12 5ZM3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12Z">
+              </path>
+              <path d="M16.9497 7.05015C14.2161 4.31648 9.78392 4.31648 7.05025 7.05015C6.65973 7.44067 6.02656 7.44067 5.63604 7.05015C5.24551 6.65962 5.24551 6.02646 5.63604 5.63593C9.15076 2.12121 14.8492 2.12121 18.364 5.63593C18.7545 6.02646 18.7545 6.65962 18.364 7.05015C17.9734 7.44067 17.3403 7.44067 16.9497 7.05015Z">
+              </path>
+            </svg>
+          </div>
+          <div className="loading-indicator ml-2">Loading...</div>
         </div>
       ) : (
         <div className="search-results-container">
