@@ -8,6 +8,7 @@ module.exports = {
     externalResolver: true,
   },
   images: {
-    domains: ['cdn.imagin.studio']
+    domains: ['cdn.imagin.studio', 'lh3.googleusercontent.com']
+
   }
 };

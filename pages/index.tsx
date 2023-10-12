@@ -1,5 +1,7 @@
 import Image from 'next/image'
 import { Footer, Hero, Navbar, SearchBar } from '@/components'
+import { Metadata } from 'next'
+
 
 
 export default function Home() {
