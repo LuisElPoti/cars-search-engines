@@ -6,7 +6,8 @@ import { CarCard } from ".";
 import { CarInfo } from "@/types";
 import Pagination from "./Paginacion"; // Importa el componente de paginación
 import { useRouter } from "next/router";
-import Swal from 'sweetalert2'
+//import Swal from "sweetalert";
+import Swal from "sweetalert2";
 
 let ventana;
 if (typeof window !== 'undefined')
