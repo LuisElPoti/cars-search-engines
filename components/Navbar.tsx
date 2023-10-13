@@ -1,11 +1,12 @@
 import Link from 'next/link';
 import Image from 'next/image'
 import CustomButton from './CustomButton';
-
+import { UserButton, useUser, SignInButton } from '@clerk/nextjs';
+import { User } from '@clerk/nextjs/server';
 
 function Navbar() {
 
- 
+  const user = useUser();
   return (
     <header className='w-full absolute z-10'>
         <nav className='max-w-[1440px] mx-auto
@@ -22,7 +23,20 @@ function Navbar() {
                 />
             </Link>
 
-            
+            <div className='flex items-center'>
+              {user.isSignedIn ? (
+                <div className='rounded-full bg-black text-white font-bold flex items-center p-2'>
+                  <p className='mr-2'>{user.user.fullName}</p>
+                  <UserButton />
+                </div>
+              ) : (
+                <div className='rounded-full bg-black text-white font-bold flex items-center p-2'>
+                  
+                <SignInButton />
+                </div>
+              )}
+            </div>
+        
 
             
         </nav>
