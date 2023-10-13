@@ -85,8 +85,8 @@ export default function Detail() {
                       </div>
                       <hr className="my-2" />
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                        <label className="text-center py-1">Precio: {detailsCar.precio}</label>
-                        <label className='text-center py-1'>Velocidad maxima: {detailsCar.velocidad_maxima}</label>
+                        <label className="text-center py-1">Precio US$: {detailsCar.precio}</label>
+                        <label className='text-center py-1'>Velocidad maxima: {detailsCar.velocidad_maxima} km/h</label>
                         <label className='text-center py-1'>Estado: {detailsCar.estado}</label>
                         <label className='text-center py-1'>Transmision: {detailsCar.transmision}</label>
                         <label className='text-center py-1'>Traccion: {detailsCar.traccion}</label>
