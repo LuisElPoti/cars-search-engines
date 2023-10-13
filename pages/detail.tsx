@@ -34,55 +34,49 @@ export default function Detail() {
 
 
   return (
-    <div className="mx-4">
+    <form className='mx-4 sm:mx-10 md:mx-20 lg:mx-28 mt-10 mb-[7%] translate-y-[15%]'>
       {!isLoading ? (
-        <div className="loading-indicator-container flex items-center justify-center h-screen">
-        <div aria-label="Loading..." role="status">
-          <svg className="animate-spin w-6 h-6 text-blue-500" viewBox="0 0 24 24">
-            <path
-              className="opacity-20"
-              d="M12 5C8.13401 5 5 8.13401 5 12C5 15.866 8.13401 19 12 19C15.866 19 19 15.866 19 12C19 8.13401 15.866 5 12 5Z"
-            ></path>
-            <path
-              d="M16.9497 7.05015C14.2161 4.31648 9.78392 4.31648 7.05025 7.05015C6.65973 7.44067 6.02656 7.44067 5.63604 7.05015C5.24551 6.65962 5.24551 6.02646 5.63604 5.63593C9.15076 2.12121 14.8492 2.12121 18.364 5.63593C18.7545 6.02646 18.7545 6.65962 18.364 7.05015C17.9734 7.44067 17.3403 7.44067 16.9497 7.05015Z"
-            ></path>
-          </svg>
+        <div className="loading-indicator-container">
+          <div aria-label="Loading..." role="status">
+            <svg className="animate-spin w-6 h-6 fill-blue-500" viewBox="3 3 18 18">
+              <path className="opacity-20" d="M12 5C8.13401 5 5 8.13401 5 12C5 15.866 8.13401 19 12 19C15.866 19 19 15.866 19 12C19 8.13401 15.866 5 12 5ZM3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12Z">
+              </path>
+              <path d="M16.9497 7.05015C14.2161 4.31648 9.78392 4.31648 7.05025 7.05015C6.65973 7.44067 6.02656 7.44067 5.63604 7.05015C5.24551 6.65962 5.24551 6.02646 5.63604 5.63593C9.15076 2.12121 14.8492 2.12121 18.364 5.63593C18.7545 6.02646 18.7545 6.65962 18.364 7.05015C17.9734 7.44067 17.3403 7.44067 16.9497 7.05015Z">
+              </path>
+            </svg>
+          </div>
+          <div className="loading-indicator ml-2">Loading...</div>
         </div>
-        <div className="loading-indicator ml-2">Loading...</div>
-      </div>
       ) : (
-        <div className="space-y-4">
+        <>
           {detailsCar !== undefined ? (
-            <div>
-              {/* mover mas para abajo el boton, la marca y el modelo */}
-              
-              <div className='flex items-center space-x-4'>
-              
-              <div className="mb-4"> {/* Add this div with a margin */}
-                <button
-                  onClick={handleButtonClick}
-                  className="bg-indigo-600 px-4 py-2 text-sm font-semibold text-white rounded-md"
-                >
-                  <ArrowSmallLeftIcon className="inline h-5 w-5 mr-1" />
-                  Volver
-                </button>
-              </div>
-              
-              <h1 className="font-semibold text-2xl">
-                {detailsCar.marca} {detailsCar.modelo}
-              </h1>
-              <p className="text-sm text-gray-600">
-                {detailsCar.descripcion}
-              </p>
-              </div>
-              <div className="grid grid-cols-1 gap-4">
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                  <Image src={generateCarImageUrl2(detailsCar, '29')} alt="car model" width={500} height={500} className="object-contain" />
-                  <Image src={generateCarImageUrl2(detailsCar, '33')} alt="car model" width={500} height={500} className="object-contain" />
-                  <Image src={generateCarImageUrl2(detailsCar, '13')} alt="car model" width={500} height={500} className="object-contain" />
-                </div>
-
-                <div className="bg-gray-100 rounded-xl p-4">
+            <>
+              <div className="space-y-12">
+                <div className="border-gray-900/10 pb-12">
+                  <div className='flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:items-center sm:space-x-4'>
+                    <button onClick={handleButtonClick} className="rounded-md bg-indigo-600 px-2 py-1 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600">
+                      <ArrowSmallLeftIcon className='inline h-5 w-5 mr-1'/>
+                      Volver
+                    </button>
+                    <h1 className="font-semibold leading-7 text-gray-900 sm:text-xl">{detailsCar.marca} {detailsCar.modelo}</h1>
+                  </div>
+                  <p className="mt-1 ml-0 sm:ml-24 text-sm leading-6 text-gray-600">
+                    {detailsCar.descripcion}
+                  </p>
+  
+                  <div className="mt-10 grid grid-cols-1 gap-4 sm:gap-0 sm:grid-cols-3">
+                    <div className="col-span-1">
+                      <Image src={generateCarImageUrl2(detailsCar, '29')} alt='car model' height={1000} width={1000} priority className='object-contain' />
+                    </div>
+                    <div className="col-span-1">
+                      <Image src={generateCarImageUrl2(detailsCar, '33')} alt='car model' height={1000} width={1000} priority className='object-contain' />
+                    </div>
+                    <div className="col-span-1">
+                      <Image src={generateCarImageUrl2(detailsCar, '13')} alt='car model' height={1000} width={1000} priority className='object-contain' />
+                    </div>
+                  </div>
+  
+                  <div className="bg-gray-100 rounded-xl p-4">
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div className="bg-white rounded-lg shadow">
                       <div className="flex items-center">
@@ -117,18 +111,21 @@ export default function Detail() {
                       </div>
                     </div>
                   </div>
+                  </div>
                 </div>
               </div>
-            </div>
+            </>
           ) : (
-            <div>
-              {/* Render something when detailsCar is undefined */}
-            </div>
+            <>
+              <div>
+                {/* Contenido para cuando detailsCar no está definido */}
+              </div>
+            </>
           )}
-        </div>
+        </>
       )}
-    </div>
-  );
+    </form>
+  )
   
   
 }
